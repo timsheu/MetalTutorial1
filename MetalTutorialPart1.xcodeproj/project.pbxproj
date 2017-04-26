@@ -13,6 +13,7 @@
 		56C193811EAF7E30004DDF57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56C193801EAF7E30004DDF57 /* Assets.xcassets */; };
 		56C193841EAF7E30004DDF57 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56C193821EAF7E30004DDF57 /* LaunchScreen.storyboard */; };
 		56C1938C1EAF86D4004DDF57 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 56C1938B1EAF86D4004DDF57 /* Shader.metal */; };
+		A85EEAAA1EB086A400B7EB9B /* tulips_yuyv422_prog_packed_qcif.yuv in Resources */ = {isa = PBXBuildFile; fileRef = A85EEAA91EB086A400B7EB9B /* tulips_yuyv422_prog_packed_qcif.yuv */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		56C193831EAF7E30004DDF57 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		56C193851EAF7E30004DDF57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56C1938B1EAF86D4004DDF57 /* Shader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shader.metal; sourceTree = "<group>"; };
+		A85EEAA91EB086A400B7EB9B /* tulips_yuyv422_prog_packed_qcif.yuv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tulips_yuyv422_prog_packed_qcif.yuv; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +42,7 @@
 		56C1936D1EAF7E30004DDF57 = {
 			isa = PBXGroup;
 			children = (
+				A85EEAA91EB086A400B7EB9B /* tulips_yuyv422_prog_packed_qcif.yuv */,
 				56C193781EAF7E30004DDF57 /* MetalTutorialPart1 */,
 				56C193771EAF7E30004DDF57 /* Products */,
 			);
@@ -129,6 +132,7 @@
 			files = (
 				56C193841EAF7E30004DDF57 /* LaunchScreen.storyboard in Resources */,
 				56C193811EAF7E30004DDF57 /* Assets.xcassets in Resources */,
+				A85EEAAA1EB086A400B7EB9B /* tulips_yuyv422_prog_packed_qcif.yuv in Resources */,
 				56C1937F1EAF7E30004DDF57 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -308,6 +312,7 @@
 				56C1938A1EAF7E30004DDF57 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
