@@ -9,15 +9,18 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var uiimage: UIImageView!
     @IBOutlet weak var showImage: UIView!
     var device: MTLDevice!
     var metalLayer: CAMetalLayer!
     var queue: MTLCommandQueue!
-    var uniform_buffer: MTLBuffer!
+    var intputBuffer: MTLBuffer!
+    var outputBuffer: MTLBuffer!
     var cps: MTLComputePipelineState!
     override func viewDidLoad() {
         super.viewDidLoad()
         initCommon()
+        computeShader()
 //        timer = CADisplayLink(target: self, selector: #selector(ViewController.gameloop))
 //        timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
     }
@@ -43,8 +46,9 @@ class ViewController: UIViewController {
         metalLayer = CAMetalLayer()
         metalLayer.device = device
         metalLayer.pixelFormat = .bgra8Unorm
-        metalLayer.framebufferOnly = true
+        metalLayer.framebufferOnly = false
         metalLayer.frame = showImage.layer.frame
+//        metalLayer.drawableSize = CGSize(width: 176, height: 144*6)
         view.layer.addSublayer(metalLayer)
         guard let yuvPath = Bundle.main.path(forResource: "tulips_yuyv422_prog_packed_qcif", ofType: "yuv") else { return }
             //            setDebugText(string: "\(TAG), testYUV, yuvPath: \(yuvPath)")
@@ -55,35 +59,65 @@ class ViewController: UIViewController {
         let originData = yuvOriginalData.bytes
         //createUniformBuffer
 //        let bytesPerPixel = 4 * MemoryLayout<Float>.size
-        let bytes = 176 * 144 * 6 * 2
-        uniform_buffer = device.makeBuffer(length: bytes, options: [])
-        let bufferPointer = uniform_buffer.contents()
-        NSLog("before copy")
+        let bytes = yuvOriginalData.length
+        intputBuffer = device.makeBuffer(length: bytes, options: [])
+        outputBuffer = device.makeBuffer(length: bytes * 2, options: [])
+        let bufferPointer = intputBuffer.contents()
+        NSLog("before copy, size: \(bytes)")
         memcpy(bufferPointer, originData, bytes)
         NSLog("after copy")
 //        memset(bufferPointer, 0, bytes * MemoryLayout<Float>.size)
         // registerComputerShader
         queue = device.makeCommandQueue()
         let library = device.newDefaultLibrary()
-        let kernel = library?.makeFunction(name: "YCbCrColoerConversion")
+        let kernel = library?.makeFunction(name: "YUYVColorConversion")
         try! cps = device.makeComputePipelineState(function: kernel!)
     }
     
     func computeShader() -> Void {
+//        let data = NSData(bytesNoCopy: outputBuffer.contents(), length: outputBuffer.length)
+//        print("before compute: \(data))")
         if let drawable = metalLayer.nextDrawable(){
             let commandBuffer = queue.makeCommandBuffer()
             let commandEncoder = commandBuffer.makeComputeCommandEncoder()
+            let drawbleWidth = drawable.texture.width,
+                drawableHeight = drawable.texture.height,
+                threadWidth = 16, threadHeight = 32
             commandEncoder.setComputePipelineState(cps)
+            commandEncoder.setBuffer(intputBuffer, offset: 0, at: 1)
+//            commandEncoder.setBuffer(outputBuffer, offset: 0, at: 1)
             commandEncoder.setTexture(drawable.texture, at: 0)
-            commandEncoder.setBuffer(uniform_buffer, offset: 0, at: 1)
-            let threadGroupCount = MTLSizeMake(8, 8, 1)
-            let threadGroups = MTLSizeMake(drawable.texture.width / threadGroupCount.width, drawable.texture.height, threadGroupCount.height)
-            commandEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
+            let threadsPerGroup = MTLSizeMake(threadWidth, threadHeight, 1)
+            let numThreadGroup = MTLSizeMake(drawbleWidth/threadWidth, drawableHeight/threadHeight , 1)
+            commandEncoder.dispatchThreadgroups(numThreadGroup, threadsPerThreadgroup: threadsPerGroup)
             
             commandEncoder.endEncoding()
             commandBuffer.present(drawable)
             commandBuffer.commit()
         }
+        
+//        print("after compute: \(data)")
+//        let cgimage = convertRGBToImage(data: data as Data)
+//        self.uiimage.image = UIImage(cgImage: cgimage)
+    }
+    
+    func convertRGBToImage(data: Data) -> CGImage {
+        guard let provider = CGDataProvider(data: data as CFData) else {
+            print("convertRGBToImage: provider error")
+            return UIImage(named: "warning")! as! CGImage
+        }
+        let cgImage: CGImage! = CGImage(width: 176,
+                                        height: 144*6,
+                                        bitsPerComponent: 8,
+                                        bitsPerPixel: 32,
+                                        bytesPerRow: 4*176,
+                                        space: CGColorSpaceCreateDeviceRGB(),
+                                        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue),
+                                        provider: provider,
+                                        decode: nil,
+                                        shouldInterpolate: true,
+                                        intent: .defaultIntent)
+        return cgImage
     }
 }
 

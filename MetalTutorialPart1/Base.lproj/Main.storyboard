@@ -6,8 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -23,24 +21,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4KB-5O-sIy">
-                                <rect key="frame" x="24" y="170" width="327" height="327"/>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4KB-5O-sIy">
+                                <rect key="frame" x="35" y="20" width="176" height="864"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="4KB-5O-sIy" secondAttribute="height" multiplier="1:1" id="tU4-hq-rOZ"/>
-                                </constraints>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zSI-Ue-YE6">
+                                <rect key="frame" x="35" y="341" width="305.5" height="305.5"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="4KB-5O-sIy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5Z2-k9-F1s"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="4KB-5O-sIy" secondAttribute="trailing" constant="8" id="ONg-7k-NN8"/>
-                            <constraint firstItem="4KB-5O-sIy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="8" id="dWI-Gh-k66"/>
-                            <constraint firstItem="4KB-5O-sIy" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="uTS-LN-aUr"/>
-                        </constraints>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
                         <outlet property="showImage" destination="4KB-5O-sIy" id="6YI-tI-7fQ"/>
+                        <outlet property="uiimage" destination="zSI-Ue-YE6" id="n1G-yQ-hJZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
