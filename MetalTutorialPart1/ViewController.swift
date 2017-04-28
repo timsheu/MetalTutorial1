@@ -20,7 +20,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initCommon()
-        computeShader()
+        let date = Date()
+        let time = date.timeIntervalSince1970
+        print("\(time)")
+        for _ in 0..<100 {
+            computeShader()
+        }
+        print("\(Date().timeIntervalSince1970 - time)")
 //        timer = CADisplayLink(target: self, selector: #selector(ViewController.gameloop))
 //        timer.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
     }

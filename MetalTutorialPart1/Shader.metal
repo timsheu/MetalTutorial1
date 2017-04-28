@@ -13,10 +13,10 @@ using namespace metal;
 #define IMAGE_HEIGHT 144*6
 
 struct YUYVIinput{
-    uint y1;
-    uint u;
-    uint y2;
-    uint v;
+    uchar y1;
+    uchar u;
+    uchar y2;
+    uchar v;
 };
 
 vertex float4 basic_vertex(const device packed_float3* vertex_array [[ buffer(0)]],
@@ -30,17 +30,13 @@ fragment half4 basic_fragment(){
 
 kernel void YUYVColorConversion(texture2d<half, access::write> outputImage [[texture(0)]],
                                 const constant YUYVIinput *inputUInt [[buffer(1)]],
-                                const uint2 gid [[thread_position_in_grid]],
-                                const uint2 tgPos [[threadgroup_position_in_grid]],
-                                const uint2 tPerTg [[ threads_per_threadgroup]],
-                                const uint2 tPos [[thread_position_in_threadgroup]]){
-    uint2 position = tgPos * tPerTg + tPos;
+                                const uint2 gid [[thread_position_in_grid]]){
     
-    float3 colorOffset = float3( 0, -0.5, -0.5);
-    float3x3 colorMatrix = float3x3(float3(1.000,  0.001,  1.402),
-                                    float3(1.000, -0.344, -0.714),
-                                    float3(1.000,  1.772,  0.001));
-    uint serialPosition = uint(18455);
+    float3 colorOffset = float3(-(16/255.0), -0.5, -0.5);
+    float3x3 colorMatrix = float3x3(float3(1.164, 1.164,  1.164),
+                                    float3(0.000, -0.392, 2.017),
+                                    float3(1.596,  -0.813,  0));
+    uint serialPosition = uint(IMAGE_WIDTH * gid.y + gid.x) / 2;
     float u = float(inputUInt[serialPosition].u)/255.0f,
           v = float(inputUInt[serialPosition].v)/255.0f,
           y = 0.0f;
@@ -49,16 +45,11 @@ kernel void YUYVColorConversion(texture2d<half, access::write> outputImage [[tex
     }else {
         y = float(inputUInt[serialPosition].y2)/255.0;
     }
-    
+//    float3 rgb = float3(float(y+1.13983*(v-0.5)),
+//                        float(y-0.39465*(u-0.5)-0.58060*(v-0.5)),
+//                        float(y+2.03211*(u-0.5)));
     float3 rgb = colorMatrix * (float3(y, u, v) + colorOffset);
-//    if ((serialPosition%2) == 0){
-//        rgb = float3(0.2, 0.8, 0.15);
-//    }else {
-//        rgb = float3(0.8, 0.2, 0.15);
-//    }
-//    half4 outputRGB = half4(rgb.r, rgb.g, rgb.b, 1.0);
-    half4 outputRGB = half4(half3(1.0), 1.0f);
-
+    half4 outputRGB = half4(rgb.r, rgb.g, rgb.b, 1.0);
     outputImage.write(outputRGB, gid);
 }
 
